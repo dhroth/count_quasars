@@ -3,6 +3,7 @@ import scipy.integrate as integrate
 import numpy as np
 from getMags import quasarMag
 import scipy.stats
+import subprocess
 
 import config
 
@@ -167,4 +168,11 @@ if config.plotGrid:
     plt.grid()
 plt.ylim(config.plotYMin)
 plt.title(config.plotTitle)
+
+# put provenance on the side of the plot
+gitHash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
+producer = subprocess.check_output(["git", "config", "user.name"]).strip()
+provenance = producer.decode("utf-8") + ", " + gitHash.decode("utf-8")
+plt.figtext(0.93, 0.5, provenance, rotation="vertical",
+            verticalalignment="center", alpha=0.7)
 plt.show()
