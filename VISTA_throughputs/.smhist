@@ -1,0 +1,3 @@
+macro read f02.sm
+f02
+quit
