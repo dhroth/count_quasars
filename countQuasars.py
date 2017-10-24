@@ -166,7 +166,7 @@ plt.ylabel("# quasars detected with $M_{1450}$<" + str(config.M1450Max) +
            " (" + areaStr + " sq. deg.)")
 if config.plotGrid:
     plt.grid()
-plt.ylim(config.plotYMin)
+plt.ylim(config.plotYMin, config.plotYMax)
 plt.title(config.plotTitle)
 
 # put provenance on the side of the plot
