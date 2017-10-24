@@ -9,9 +9,11 @@ import numpy as np
 import config
 
 def getLsstThroughput(f):
+    if f not in ["u", "g", "r", "i", "z", "y"]:
+        raise ValueError("LSST does not have a {} filter".format(f))
     # Get the throughputs directory using the 'throughputs' package env variables.
     throughputsDir = os.getenv('LSST_THROUGHPUTS_BASELINE')
-    throughputsFile = os.path.join(throughputsDir, 'total_' + f.lower() + '.dat')
+    throughputsFile = os.path.join(throughputsDir, 'total_{}.dat'.format(f))
 
     # read the throughputs file into lsstBand
     lsstBand = Bandpass()
@@ -19,21 +21,24 @@ def getLsstThroughput(f):
     return lsstBand
 
 def getWiseThroughput(f):
-    f = f.lower()
+    if f not in ["W1", "W2"]:
+        raise ValueError("WISE does not have a {} filter".format(f))
     # the WISE throughputs are in a subdirectory WISE, not baseline
     throughputsDir = os.getenv('LSST_THROUGHPUTS_BASELINE')
     throughputsFile = os.path.join(throughputsDir, '..', 'WISE',
-                                   'WISE_' + f + '.dat')
+                                   'WISE_{}.dat'.format(f.lower()))
 
+    # TODO hacky to set the min/max wavelengths, but I think readThroughput
+    # complains because the files don't overlap in wavelength with what it's
+    # expecting. Sad!
     wiseBand = Bandpass()
-    if f == 'w1':
+    if f == 'W1':
         wavelen_min = 2600
         wavelen_max = 4000
-    elif f == 'w2':
+    elif f == 'W2':
         wavelen_min = 3890
         wavelen_max = 5560
-    else:
-        raise RuntimeError("Invalid WISE filter " + str(f))
+
     wiseBand.readThroughput(throughputsFile,
                             wavelen_min=wavelen_min,
                             wavelen_max=wavelen_max,
@@ -41,32 +46,41 @@ def getWiseThroughput(f):
     return wiseBand
 
 def getVistaThroughput(f):
-    f = f.upper()
     if f not in ['J', 'H', 'K']:
-        raise RuntimeError("Invalid VISTA filter " + str(f))
+        raise ValueError("VISTA does not have a {} filter".format(f))
 
     throughputsDir = "VISTA_throughputs"
-    throughputsFile = os.path.join(throughputsDir, 'VISTA_' + f + '_total.dat')
+    throughputsFile = os.path.join(throughputsDir, 'VISTA_{}_total.dat'.format(f))
     vistaBand = Bandpass()
     vistaBand.readThroughput(throughputsFile)
     return vistaBand
 
-def f2Throughput(f):
-    f = f.lower()
-    if f in ['u', 'g', 'r', 'i', 'z', 'y']:
+def getDesThroughput(f):
+    if f not in ["u", "g", "r", "i", "z", "y"]:
+        raise ValueError("DES does not have a {} filter".format(f))
+    throughputsDir = "DES_throughputs"
+    throughputsFile = os.path.join(throughputsDir, "total_{}.dat".format(f))
+    desBand = Bandpass()
+    desBand.readThroughput(throughputsFile)
+    return desBand
+
+def f2Throughput(survey, f):
+    if survey == "LSST":
         return getLsstThroughput(f)
-    elif f in ['w1', 'w2']:
+    elif survey == "WISE":
         return getWiseThroughput(f)
-    elif f in ['j', 'h', 'k']:
+    elif survey == "VISTA":
         return getVistaThroughput(f)
+    elif survey == "DES":
+        return getDesThroughput(f)
     else:
-        raise RuntimeError("Invalid filter name " + str(f))
+        raise RuntimeError("Invalid survey name {}".format(survey))
 
 # cache results of quasarMag in magCache
 magCache = {}
-def quasarMag(z, M1450, f):
-    if (z, M1450, f) in magCache:
-        return magCache[(z, M1450, f)]
+def quasarMag(z, M1450, survey, f):
+    if (z, M1450, survey, f) in magCache:
+        return magCache[(z, M1450, survey, f)]
     # for files containing $\lambda$ / F$_\lambda$, we use the Sed method
     # readSED_flambda. For files containing $\lambda$ / F$_\nu$,
     # we would use the readSED_fnu method instead.
@@ -115,7 +129,7 @@ def quasarMag(z, M1450, f):
     agn.multiplyFluxNorm(fluxNorm)
 
     # Calculate expected AB magnitudes in the requested lsst band 
-    bandpass = f2Throughput(f)
+    bandpass = f2Throughput(survey, f)
     mag = agn.calcMag(bandpass)
-    magCache[(z, M1450, f)] = mag
+    magCache[(z, M1450, survey, f)] = mag
     return mag

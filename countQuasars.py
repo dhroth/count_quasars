@@ -116,7 +116,7 @@ for z in np.arange(config.zMin, config.zMax, config.zStep):
             # to get the actual number of quasars, multiply by volume and magnitude
             numNewQuasars = quasarDensity * volume * config.M1450Step
             # get the apparent magnitude of quasars of this M1450 at redshift z
-            yMag = quasarMag(z, M1450, config.f)
+            yMag = quasarMag(z, M1450, config.survey, config.f)
             for zCutoff in config.zCutoffs[z >= config.zCutoffs]:
                 # increment numQuasarsAbove by the number of new quasars found
                 # for limiting depths greater than the apparent magnitude of
@@ -160,7 +160,7 @@ if len(config.depths) > 0:
 
 # plot labels/legend/grid/limit/title
 plt.legend(loc="upper left")
-plt.xlabel("Limiting depth in " + config.f)
+plt.xlabel("Limiting depth in {}-{}".format(config.survey, config.f))
 areaStr = "{:,d}".format(round(config.skyArea))
 plt.ylabel("# quasars detected with $M_{1450}$<" + str(config.M1450Max) +
            " (" + areaStr + " sq. deg.)")

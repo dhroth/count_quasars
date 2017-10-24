@@ -6,6 +6,7 @@ conf.read("countQuasars.conf")
 
 # get general config params
 
+survey = conf.get("general", "survey")
 f = conf.get("general", "filter")
 reddening = conf.getfloat("general", "reddening")
 skyArea = conf.getfloat("general", "area")
@@ -54,15 +55,24 @@ errorEnvelopeAlpha = conf.getfloat("plot", "errorEnvelopeAlpha")
 errorNSigma = conf.getfloat("plot", "errorNSigma")
 
 # get achievedMedianDepths config params
-depths = conf.get("achievedMedianDepths", f + "Depths")
-depths = list(map(float, depths.split(",")))
-labels = conf.get("achievedMedianDepths", f + "Labels")
-labels = list(map(str.strip, labels.split(",")))
-depthNSigma = conf.getint("achievedMedianDepths", f + "NSigma")
-depthLabelXs = conf.get("achievedMedianDepths", f + "LabelXs")
-depthLabelXs = list(map(float, depthLabelXs.split(",")))
-depthLabelYs = conf.get("achievedMedianDepths", f + "LabelYs")
-depthLabelYs = list(map(float, depthLabelYs.split(",")))
+sec = "achievedMedianDepths"
+if conf.has_option(sec, "{}-{}Depths".format(survey, f)):
+    depths = conf.get(sec, "{}-{}Depths".format(survey, f))
+    depths = list(map(float, depths.split(",")))
+    labels = conf.get(sec, "{}-{}Labels".format(survey, f))
+    labels = list(map(str.strip, labels.split(",")))
+
+    depthNSigma = conf.getint(sec, "{}-{}NSigma".format(survey, f))
+    depthLabelXs = conf.get(sec, "{}-{}LabelXs".format(survey, f))
+    depthLabelXs = list(map(float, depthLabelXs.split(",")))
+    depthLabelYs = conf.get(sec, "{}-{}LabelYs".format(survey, f))
+    depthLabelYs = list(map(float, depthLabelYs.split(",")))
+else:
+    depths = []
+    labels = []
+    depthNSigma = 0
+    depthLabelXs = []
+    depthLabelYs = []
 
 if not (len(depthLabelXs) == len(depthLabelYs) == len(depths) == len(labels)):
     raise ValueError("The depths, labels, and labelX and labelY arrays " +
