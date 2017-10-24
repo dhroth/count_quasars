@@ -19,35 +19,6 @@ with open(config.qlfParamsFilename, "r") as paramsFile:
         phiBreak = 10**logPhiBreak
         qlfParams.append((alpha, beta, MBreak, phiBreak, k))
 
-# this commented code independently generates all the QLF parameters
-# I'll probably delete it soon, since the params strongly covary
-"""
-numTrials = 3
-
-alphaMean = -1.5
-alphaSigma = 0.1*0
-
-betaMean = -2.81
-betaSigma = 0.25*0
-
-kMean = -0.47
-kSigma = 0.1*0
-
-MBreakMean = -25.13
-MBreakSigma = 0
-
-phiBreakMean = 1.14*10**-8
-phiBreakSigma = 3e-9*0
-
-alphas    = scipy.stats.norm(loc=alphaMean,    scale=alphaSigma   ).rvs(numTrials)
-betas     = scipy.stats.norm(loc=betaMean,     scale=betaSigma    ).rvs(numTrials)
-ks        = scipy.stats.norm(loc=kMean,        scale=kSigma       ).rvs(numTrials)
-MBreaks   = scipy.stats.norm(loc=MBreakMean,   scale=MBreakSigma  ).rvs(numTrials)
-phiBreaks = scipy.stats.norm(loc=phiBreakMean, scale=phiBreakSigma).rvs(numTrials)
-
-qlfParams = zip(alphas, betas, MBreaks, phiBreaks, ks)
-"""
-
 # Definition of Willott's quasar luminosity function
 def qlf(params, z, m1450):
     alpha, beta, MBreak, phiBreak, k = params
@@ -57,11 +28,17 @@ def qlf(params, z, m1450):
     return redshiftEvolution * phiBreak / (faintEnd + brightEnd)
 
 """
-# plot the QLF
-ms = np.linspace(-22, -28)
-phis = qlf(6, ms)
-plt.semilogy(ms, phis)
-plt.xlim(-22, -28)
+# plot the Willott and Jigna QLFs
+willott = tuple(np.array(qlfParams).mean(axis=0))
+jiang = (-1.9,-2.8,-25.2,9.93e-9,-0.7)
+ms = np.linspace(-18, -31)
+willottPhis = qlf(willott, 6, ms)
+jiangPhis = qlf(jiang, 6, ms)
+plt.semilogy(ms, willottPhis, label="Willott et al. QLF (avg)")
+plt.semilogy(ms, jiangPhis, label="Jiang et al. QLF")
+plt.xlim(-18, -31)
+plt.legend()
+plt.grid()
 plt.show()
 """
 
