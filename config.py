@@ -12,6 +12,11 @@ reddening = conf.getfloat("general", "reddening")
 skyArea = conf.getfloat("general", "area")
 qlfParamsFilename = conf.get("general", "qlfParamsFilename")
 
+# get output config params
+outputDir = conf.get("output", "outputDir")
+outFilenameTbl = conf.get("output", "outFilenameTbl")
+outFilenamePlt = conf.get("output", "outFilenamePlt")
+
 # get SED config params
 sedDir = conf.get("sed", "sedDir")
 sedFilenameFormat = conf.get("sed", "sedFilenameFormat")

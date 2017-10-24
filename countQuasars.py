@@ -4,8 +4,22 @@ import numpy as np
 from getMags import quasarMag
 import scipy.stats
 import subprocess
+import sys
+import os
+import shutil
 
 import config
+
+# parse input argument
+saveOutput = True
+syntaxMessage = "Syntax is python countQuasars [--dryrun]"
+if len(sys.argv) > 2:
+    raise ValueError(syntaxMessage)
+if len(sys.argv) == 2:
+    if sys.argv[1] == "--dryrun":
+        saveOutput = False
+    else:
+        raise ValueError(syntaxMessage)
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
@@ -148,8 +162,53 @@ plt.title(config.plotTitle)
 
 # put provenance on the side of the plot
 gitHash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
+gitHash = gitHash.decode("utf-8")
 producer = subprocess.check_output(["git", "config", "user.name"]).strip()
-provenance = producer.decode("utf-8") + ", " + gitHash.decode("utf-8")
+provenance = producer.decode("utf-8") + ", " + gitHash
 plt.figtext(0.93, 0.5, provenance, rotation="vertical",
             verticalalignment="center", alpha=0.7)
-plt.show()
+
+if not saveOutput:
+    plt.show()
+    exit()
+
+# if we get here we need to save output
+
+overwriteError = "Output path {} already exists. Refusing to overwrite"
+
+# save one .tbl file for each zCutoff
+outPath = os.path.join(config.outputDir, gitHash)
+if not os.path.exists(outPath):
+    os.mkdir(outPath)
+for z in config.zCutoffs:
+    outFilename = config.outFilenameTbl.format(config.survey, config.f,
+                                               config.reddening, z)
+    outFilename = os.path.join(outPath, outFilename)
+
+    # refuse to overwrite .tbl files
+    if os.path.exists(outFilename):
+        raise ValueError(overwriteError.format(outFilename))
+
+    mus = meanNumQuasarsAbove[z]
+    sigmas = oneSigmaNumQuasarsAbove[z]
+    with open(outFilename, "w") as outFile:
+        outFile.write("limitingDepth,numDetections,oneSigma\n")
+        for depth, count, oneSigma in zip(limitingDepths, mus, sigmas):
+            outFile.write("{:.1f},{:.2f},{:.2f}\n".format(depth, count, oneSigma))
+
+# save the plot
+outFilename = config.outFilenamePlt.format(config.survey, config.f, config.reddening)
+outFilename = os.path.join(outPath, outFilename)
+if os.path.exists(outFilename):
+    raise ValueError(overwriteError.format(outFilename))
+plt.savefig(outFilename)
+
+# copy the config file currently in use into outPath
+confDest = os.path.join(outPath, "countQuasars.conf")
+if not os.path.exists(confDest):
+    shutil.copyfile("countQuasars.conf", confDest)
+else:
+    # No error is thrown if the config file already exists -- we assume the
+    # user makes no changes between config files besides the survey/filter and
+    # the reddening, but this is not enforced
+    pass
