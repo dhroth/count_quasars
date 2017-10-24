@@ -31,11 +31,18 @@ conda install lsst-sims-photutils
 The code has many configuration options located in countQuasars.conf.
 The parameters are documented in the file.
 
-# Plot Provenance
+# Output
 
-The output of this code is a plot. On the right side of the plot, the code
-puts the name of the person who ran the code and the git revision hash.
-This is done so plots can be reproduced. Therefore, it is important that
-you commit all of your changes immediately before making any plots that
-you intend to save, since otherwise, the git version will not refer to
-the code that actually ran to generate the plot.
+When run with the --dryrun argument, the `countQuasars.py` script will show the
+output plot but will not save any results to disk. When this argument is not
+present, it will save the output plot and tables respectively to
+`config.outputDir/<current git revision>/config.outFilenamePlt(Tbl)`.
+Because the output filenames are
+formatted with only the survey, filter, and reddening (as documented in the
+config file), it is important to commit any changes you make to the config file
+or the code between output-saving runs unless the changes are made exclusively
+to `config.survey`, `config.f`, and `config.reddening`, since those parameters
+are saved in the filenames themselves.
+
+The config file currently in use is also saved to
+`config.outputDir/<current git revision>`
