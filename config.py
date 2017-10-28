@@ -41,8 +41,8 @@ omegaLambda = 1 - omegaM
 
 # get plot config params
 plotTitle = conf.get("plot", "plotTitle")
-plotYMin = conf.getfloat("plot", "yMin")
-plotYMax = conf.getfloat("plot", "yMax")
+yMin = conf.getfloat("plot", "yMin")
+yMax = conf.getfloat("plot", "yMax")
 plotGrid = conf.getboolean("plot", "plotGrid")
 
 minLimitingDepth = conf.getfloat("plot", "minLimitingDepth")

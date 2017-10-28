@@ -130,8 +130,8 @@ for zCutoff, zColor in zip(config.zCutoffs, config.zColors):
     plt.semilogy(limitingDepths, mu, color=zColor, label="z>=" + str(zCutoff))
     # plot the error envelopes
     plt.fill_between(limitingDepths,
-                     (mu - config.errorNSigma * sigma).clip(config.plotYMin),
-                     (mu + config.errorNSigma * sigma).clip(config.plotYMin),
+                     (mu - config.errorNSigma * sigma).clip(config.yMin),
+                     (mu + config.errorNSigma * sigma).clip(config.yMin),
                      alpha=config.errorEnvelopeAlpha,
                      color=zColor)
 
@@ -157,7 +157,8 @@ plt.ylabel("# quasars detected with $M_{1450}$<" + str(config.M1450Max) +
            " (" + areaStr + " sq. deg.)")
 if config.plotGrid:
     plt.grid()
-plt.ylim(config.plotYMin, config.plotYMax)
+plt.ylim(config.yMin, config.yMax)
+plt.xlim(config.minLimitingDepth, config.maxLimitingDepth)
 plt.title(config.plotTitle)
 
 # put provenance on the side of the plot
