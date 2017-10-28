@@ -7,19 +7,29 @@ import subprocess
 import sys
 import os
 import shutil
+import argparse
+import warnings
 
 import config
 
 # parse input argument
-saveOutput = True
-syntaxMessage = "Syntax is python countQuasars [--dryrun]"
-if len(sys.argv) > 2:
-    raise ValueError(syntaxMessage)
-if len(sys.argv) == 2:
-    if sys.argv[1] == "--dryrun":
-        saveOutput = False
-    else:
-        raise ValueError(syntaxMessage)
+parser = argparse.ArgumentParser(description="")
+parser.add_argument("-s", "--saveOutput", help="Save output to disk",
+                    action="store_true")
+parser.add_argument("-f", "--forceOverwrite", help="Overwrite output files " +
+                    "if they already exist", action="store_true")
+parser.add_argument("-x", "--minLimitingDepth",
+                    help="x-axis minimum value", type=float)
+parser.add_argument("-X", "--maxLimitingDepth",
+                    help="x-axis maximum value", type=float)
+parser.add_argument("-y", "--yMin", help="y-axis minimum value", type=float)
+parser.add_argument("-Y", "--yMax", help="y-axis maximum value", type=float)
+args = parser.parse_args()
+
+for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
+    argVal = getattr(args, opt)
+    if argVal is not None:
+        setattr(config, opt, argVal)
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
@@ -169,13 +179,14 @@ provenance = producer.decode("utf-8") + ", " + gitHash
 plt.figtext(0.93, 0.5, provenance, rotation="vertical",
             verticalalignment="center", alpha=0.7)
 
-if not saveOutput:
+if not args.saveOutput:
     plt.show()
     exit()
 
 # if we get here we need to save output
 
-overwriteError = "Output path {} already exists. Refusing to overwrite"
+overwriteError = "Output path {} already exists. Refusing to overwrite. "
+overwriteError += "Specify -f or --forceOverwrite to force overwriting."
 
 # save one .tbl file for each zCutoff
 outPath = os.path.join(config.outputDir, gitHash)
@@ -186,23 +197,25 @@ for z in config.zCutoffs:
                                                config.reddening, z)
     outFilename = os.path.join(outPath, outFilename)
 
-    # refuse to overwrite .tbl files
-    if os.path.exists(outFilename):
-        raise ValueError(overwriteError.format(outFilename))
-
-    mus = meanNumQuasarsAbove[z]
-    sigmas = oneSigmaNumQuasarsAbove[z]
-    with open(outFilename, "w") as outFile:
-        outFile.write("limitingDepth,numDetections,oneSigma\n")
-        for depth, count, oneSigma in zip(limitingDepths, mus, sigmas):
-            outFile.write("{:.1f},{:.2f},{:.2f}\n".format(depth, count, oneSigma))
+    # refuse to overwrite data table files
+    if os.path.exists(outFilename) and not args.forceOverwrite:
+        warnings.warn(overwriteError.format(outFilename))
+    else:
+        mus = meanNumQuasarsAbove[z]
+        sigmas = oneSigmaNumQuasarsAbove[z]
+        with open(outFilename, "w") as outFile:
+            outFile.write("limitingDepth,numDetections,oneSigma\n")
+            for depth, count, oneSigma in zip(limitingDepths, mus, sigmas):
+                outFile.write("{:.1f},{:.2f},{:.2f}\n".format(depth, count, oneSigma))
 
 # save the plot
 outFilename = config.outFilenamePlt.format(config.survey, config.f, config.reddening)
 outFilename = os.path.join(outPath, outFilename)
-if os.path.exists(outFilename):
-    raise ValueError(overwriteError.format(outFilename))
-plt.savefig(outFilename)
+if os.path.exists(outFilename) and not args.forceOverwrite:
+    # refuse to overwrite plot files unless --force is specified
+    warnings.warn(overwriteError.format(outFilename))
+else:
+    plt.savefig(outFilename)
 
 # copy the config file currently in use into outPath
 confDest = os.path.join(outPath, "countQuasars.conf")
