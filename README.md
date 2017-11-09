@@ -33,9 +33,9 @@ The parameters are documented in the file.
 
 # Output
 
-When run with the --dryrun argument, the `countQuasars.py` script will show the
-output plot but will not save any results to disk. When this argument is not
-present, it will save the output plot and tables respectively to
+When run without any options, the `countQuasars.py` script will show the
+output plot but will not save any results to disk. When the --saveOutput
+argument is present, it will save the output plot and tables respectively to
 `config.outputDir/<current git revision>/config.outFilenamePlt(Tbl)`.
 Because the output filenames are
 formatted with only the survey, filter, and reddening (as documented in the
