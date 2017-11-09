@@ -45,6 +45,17 @@ def getWiseThroughput(f):
                             wavelen_step=10)
     return wiseBand
 
+def getPanstarrsThroughput(f):
+    if f not in ["g", "r", "i", "z", "y"]:
+        raise ValueError("PanSTARRS does not have a {} filter".format(f))
+    # the PanStarrs throughputs are in a subdirectory panStarrs, not baseline
+    throughputsDir = os.getenv("LSST_THROUGHPUTS_BASELINE")
+    throughputsFile = os.path.join(throughputsDir, "..", "panStarrs",
+                                   "panStarrs_{}.dat".format(f))
+    panstarrsBand = Bandpass()
+    panstarrsBand.readThroughput(throughputsFile)
+    return panstarrsBand
+
 def getVistaThroughput(f):
     if f not in ['J', 'H', 'K']:
         raise ValueError("VISTA does not have a {} filter".format(f))
