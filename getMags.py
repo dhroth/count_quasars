@@ -75,6 +75,25 @@ def getDesThroughput(f):
     desBand.readThroughput(throughputsFile)
     return desBand
 
+def getUkidssThroughput(f):
+    if f not in ["Y"]:
+        raise ValueError("UKIDSS does not have a {} filter".format(f))
+    throughputsDir = "UKIDSS_throughputs"
+    throughputsFile = os.path.join(throughputsDir, "total_{}.dat".format(f))
+    ukidssBand = Bandpass()
+    ukidssBand.readThroughput(throughputsFile)
+    return ukidssBand
+
+def getHscThroughput(f):
+    if f not in ["Y"]:
+        raise ValueError("HSC does not have a {} filter".format(f))
+    throughputsDir = "HSC_throughputs"
+    throughputsFile = os.path.join(throughputsDir, "total_{}.dat".format(f))
+    hscBand = Bandpass()
+    hscBand.readThroughput(throughputsFile)
+    return hscBand
+
+
 def f2Throughput(survey, f):
     if survey == "LSST":
         return getLsstThroughput(f)
@@ -84,6 +103,10 @@ def f2Throughput(survey, f):
         return getVistaThroughput(f)
     elif survey == "DES":
         return getDesThroughput(f)
+    elif survey == "UKIDSS":
+        return getUkidssThroughput(f)
+    elif survey == "HSC":
+        return getHscThroughput(f)
     else:
         raise RuntimeError("Invalid survey name {}".format(survey))
 
