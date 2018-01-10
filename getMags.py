@@ -57,7 +57,7 @@ def getPanstarrsThroughput(f):
     return panstarrsBand
 
 def getVistaThroughput(f):
-    if f not in ['J', 'H', 'K']:
+    if f not in ['Y', 'J', 'H', 'K']:
         raise ValueError("VISTA does not have a {} filter".format(f))
 
     throughputsDir = "VISTA_throughputs"
