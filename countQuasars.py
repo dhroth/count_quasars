@@ -43,6 +43,9 @@ with open(config.qlfParamsFilename, "r") as paramsFile:
         phiBreak = 10**logPhiBreak
         qlfParams.append((alpha, beta, MBreak, phiBreak, k))
 
+#jiang = (-1.9,-2.8,-25.2,9.93e-9,-0.7)
+#qlfParams = [jiang]
+
 # Definition of Willott's quasar luminosity function
 def qlf(params, z, m1450):
     alpha, beta, MBreak, phiBreak, k = params
@@ -50,21 +53,6 @@ def qlf(params, z, m1450):
     brightEnd = 10**(0.4 * (beta + 1) * (m1450 - MBreak))
     redshiftEvolution = 10**(k * (z - 6))
     return redshiftEvolution * phiBreak / (faintEnd + brightEnd)
-
-"""
-# plot the Willott and Jigna QLFs
-willott = tuple(np.array(qlfParams).mean(axis=0))
-jiang = (-1.9,-2.8,-25.2,9.93e-9,-0.7)
-ms = np.linspace(-18, -31)
-willottPhis = qlf(willott, 6, ms)
-jiangPhis = qlf(jiang, 6, ms)
-plt.semilogy(ms, willottPhis, label="Willott et al. QLF (avg)")
-plt.semilogy(ms, jiangPhis, label="Jiang et al. QLF")
-plt.xlim(-18, -31)
-plt.legend()
-plt.grid()
-plt.show()
-"""
 
 # helper functions for cosmology calculations
 def E(z):
