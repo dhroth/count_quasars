@@ -11,20 +11,45 @@ redshift and over absolute quasar magnitude, the number density
 of quasars as given by a parameterized quasar luminosity function.
 
 # Prerequisites
-1. Python 3 (adapting the code to Python 2 should be straightforward)
+1. Python 2 or 3 (see below for which to choose)
 2. `numpy`, `scipy`, `matplotlib`
 3. `sims_photUtils` from the LSST stack
 
 If you don't already have the LSST software stack on your machine, getting
 `sims_photUtils` may be difficult. If possible, you should install the
 stack from source, since the simulations stack no longer supports conda.
-However, in practice this is very difficult to do. To install `sims_photUtils`
-using conda, follow the instructions here:
-https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF#CatalogsandMAF-BinaryInstallation
-and then install `sims_photUtils` using
+In this case, you should use Python 3, since the LSST stack is mostly
+moving to Python 3.
+
+However, in practice, installing the LSST stack from source
+is very difficult to do. To install an old version
+of `sims_photUtils` using conda, run the following commands:
 ```
+conda update conda
+conda config --add channels http://conda.lsst.codes/sims
 conda install lsst-sims-photutils
 ```
+This will add the lsst sims conda distribution channel and then install
+`sims_photUtils` along with all of its dependencies. In this case, I think
+you may need to use Python 2, but I'm not entirely sure.
+
+Note that installing an old version in this way may downgrade packages
+pip and astropy. We recommend installing `lsst-sims-photutils` in a conda
+virtual environment.
+
+Before running code in this repository, you need to set up the
+`sims_photUtils` package. First, source the correct loadLSST file for
+your terminal. These should be located in the bin directory for your
+conda virtual environment. You might be able to get the path by running
+`setup` with no arguments.
+```
+source path/to/conda/env/loadLSST.sh
+```
+Then set up the `sims_photUtils` package:
+```
+setup sims_photUtils
+```
+
 
 # Configuration
 
