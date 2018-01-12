@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 from matplotlib import pyplot as plt
 import scipy.integrate as integrate
 import numpy as np
@@ -150,7 +152,7 @@ if len(config.depths) > 0:
 # plot labels/legend/grid/limit/title
 plt.legend(loc="upper left")
 plt.xlabel("Limiting depth in {}-{}".format(config.survey, config.f))
-areaStr = "{:,d}".format(round(config.skyArea))
+areaStr = "{:,d}".format(int(round(config.skyArea)))
 plt.ylabel("# quasars detected with $M_{1450}$<" + str(config.M1450Max) +
            " (" + areaStr + " sq. deg.)")
 if config.plotGrid:
