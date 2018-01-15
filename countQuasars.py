@@ -37,7 +37,7 @@ for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
 # assuming alpha and k are constant as described in the paper
 qlfParams = []
 alpha = -1.5
-k = -0.47
+k = config.k
 with open(config.qlfParamsFilename, "r") as paramsFile:
     for line in paramsFile:
         # each line is log(phi*), beta, M*

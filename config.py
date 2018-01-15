@@ -11,6 +11,7 @@ f = conf.get("general", "filter")
 reddening = conf.getfloat("general", "reddening")
 skyArea = conf.getfloat("general", "area")
 qlfParamsFilename = conf.get("general", "qlfParamsFilename")
+k = conf.getfloat("general", "k")
 
 # get output config params
 outputDir = conf.get("output", "outputDir")
