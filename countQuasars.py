@@ -11,6 +11,7 @@ import os
 import shutil
 import argparse
 import warnings
+import datetime
 
 import config
 
@@ -179,12 +180,13 @@ overwriteError = "Output path {} already exists. Refusing to overwrite. "
 overwriteError += "Specify -f or --forceOverwrite to force overwriting."
 
 # save one .tbl file for each zCutoff
-outPath = os.path.join(config.outputDir, gitHash)
+date = datetime.datetime.now().strftime("%Y-%m-%d")
+outPath = config.outputDir.format(config.survey, config.f, date)
 if not os.path.exists(outPath):
-    os.mkdir(outPath)
+    os.makedirs(outPath)
 for z in config.zCutoffs:
     outFilename = config.outFilenameTbl.format(config.survey, config.f,
-                                               config.reddening, z)
+                                               config.reddening, z, date)
     outFilename = os.path.join(outPath, outFilename)
 
     # refuse to overwrite data table files
@@ -199,7 +201,8 @@ for z in config.zCutoffs:
                 outFile.write("{:.1f},{:.2f},{:.2f}\n".format(depth, count, oneSigma))
 
 # save the plot
-outFilename = config.outFilenamePlt.format(config.survey, config.f, config.reddening)
+outFilename = config.outFilenamePlt.format(config.survey, config.f,
+                                           config.reddening, date)
 outFilename = os.path.join(outPath, outFilename)
 if os.path.exists(outFilename) and not args.forceOverwrite:
     # refuse to overwrite plot files unless --force is specified
@@ -216,3 +219,7 @@ else:
     # user makes no changes between config files besides the survey/filter and
     # the reddening, but this is not enforced
     pass
+
+# copy the command line arguments into outPath
+with open(os.path.join(outPath, "commandArgs.txt"), "w") as outFile:
+    outFile.write(" ".join(sys.argv[1:]))
