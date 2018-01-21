@@ -167,6 +167,7 @@ gitHash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip
 gitHash = gitHash.decode("utf-8")
 producer = subprocess.check_output(["git", "config", "user.name"]).strip()
 provenance = producer.decode("utf-8") + ", " + gitHash
+provenance += "\n Using {} QLF with k={:2.4f}".format(config.qlfName, config.k)
 plt.figtext(0.93, 0.5, provenance, rotation="vertical",
             verticalalignment="center", alpha=0.7)
 
