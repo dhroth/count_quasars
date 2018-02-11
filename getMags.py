@@ -65,7 +65,12 @@ def getVistaThroughput(f):
     throughputsDir = "VISTA_throughputs"
     throughputsFile = os.path.join(throughputsDir, 'VISTA_{}_total.dat'.format(f))
     vistaBand = Bandpass()
-    vistaBand.readThroughput(throughputsFile)
+    vistaBand.readThroughput(throughputsFile,
+                             wavelen_min=500.0,
+                             wavelen_max=2500.0,
+                             wavelen_step=0.5)
+
+
     return vistaBand
 
 def getDesThroughput(f):
@@ -164,7 +169,7 @@ def quasarMag(z, M1450, survey, f):
     fluxNorm = agn.calcFluxNorm(m, band1450)
     agn.multiplyFluxNorm(fluxNorm)
 
-    # Calculate expected AB magnitudes in the requested lsst band 
+    # Calculate expected AB magnitudes in the requested lsst band
     bandpass = f2Throughput(survey, f)
     mag = agn.calcMag(bandpass)
     magCache[(z, M1450, survey, f)] = mag
