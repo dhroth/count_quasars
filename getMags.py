@@ -59,11 +59,13 @@ def getPanstarrsThroughput(f):
     return panstarrsBand
 
 def getVistaThroughput(f):
-    if f not in ['Y', 'J', 'H', 'K']:
-        raise ValueError("VISTA does not have a {} filter".format(f))
+    availableFilters = ['Y', 'J', 'H', 'Ks']
+    if f not in availableFilters:
+        raise ValueError("VISTA does not have a {} filter".format(f) +
+                         "Available filters are " + ",".join(availableFilters))
 
     throughputsDir = "VISTA_throughputs"
-    throughputsFile = os.path.join(throughputsDir, 'VISTA_{}_total.dat'.format(f))
+    throughputsFile = os.path.join(throughputsDir, 'total_{}.dat'.format(f))
     vistaBand = Bandpass()
     vistaBand.readThroughput(throughputsFile,
                              wavelen_min=500.0,
