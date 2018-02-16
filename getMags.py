@@ -85,7 +85,7 @@ def getDesThroughput(f):
     return desBand
 
 def getUkidssThroughput(f):
-    if f not in ["Y"]:
+    if f not in ["Z", "Y", "H", "J", "K"]:
         raise ValueError("UKIDSS does not have a {} filter".format(f))
     throughputsDir = "UKIDSS_throughputs"
     throughputsFile = os.path.join(throughputsDir, "total_{}.dat".format(f))
