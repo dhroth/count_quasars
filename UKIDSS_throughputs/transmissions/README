@@ -13,8 +13,6 @@ Each file consists of a sequence of "header" records, beginning with a
 "#" character, followed by records containing the numerical values from
 the table. 
 
-Retrieved from: http://www.ukidss.org/technical/photom/photom.html
-
 Table02_online.dat
 Table03_online.dat
 Table04_online.dat
