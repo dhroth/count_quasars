@@ -58,6 +58,19 @@ def getPanstarrsThroughput(f):
     panstarrsBand.readThroughput(throughputsFile)
     return panstarrsBand
 
+
+def getSdssThroughput(f):
+    if f not in ["u", "g", "r", "i", "z"]:
+        raise ValueError("SDSS does not have a {} filter".format(f))
+    # the SDSS throughputs are in a subdirectory sdss, not baseline
+    throughputsDir = os.getenv("LSST_THROUGHPUTS_BASELINE")
+    # doi use the Doi et al. 2010 throughput curves
+    throughputsFile = os.path.join(throughputsDir, "..", "sdss",
+                                   "doi_{}.dat".format(f))
+    sdssBand = Bandpass()
+    sdssBand.readThroughput(throughputsFile)
+    return sdssBand
+
 def getVistaThroughput(f):
     availableFilters = ['Y', 'J', 'H', 'Ks']
     if f not in availableFilters:
@@ -106,6 +119,8 @@ def getHscThroughput(f):
 def f2Throughput(survey, f):
     if survey == "LSST":
         return getLsstThroughput(f)
+    elif survey == "SDSS":
+        return getSdssThroughput(f)
     elif survey == "WISE":
         return getWiseThroughput(f)
     elif survey == "VISTA":
