@@ -15,24 +15,21 @@ import datetime
 
 import config
 
-# parse input argument
-parser = argparse.ArgumentParser(description="")
-parser.add_argument("-s", "--saveOutput", help="Save output to disk",
-                    action="store_true")
-parser.add_argument("-f", "--forceOverwrite", help="Overwrite output files " +
-                    "if they already exist", action="store_true")
-parser.add_argument("-x", "--minLimitingDepth",
-                    help="x-axis minimum value", type=float)
-parser.add_argument("-X", "--maxLimitingDepth",
-                    help="x-axis maximum value", type=float)
-parser.add_argument("-y", "--yMin", help="y-axis minimum value", type=float)
-parser.add_argument("-Y", "--yMax", help="y-axis maximum value", type=float)
-args = parser.parse_args()
+help(config)
+
+from getargs import getargs
+
+args = getargs()
+
+if args.configfile is not None:
+    configfile = args.configfile
 
 for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
     argVal = getattr(args, opt)
     if argVal is not None:
         setattr(config, opt, argVal)
+
+sys.exit()
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
@@ -65,7 +62,7 @@ def E(z):
 def VC(z, dz, Omega):
     # get the comoving volume between redshift z and z+dz
     # over sky area Omega (in radians)
-    
+
     # get the comoving distance to redshift z
     DC = config.DH * integrate.quad(lambda zp: 1/E(zp), 0, z)[0]
 
@@ -104,7 +101,7 @@ for z in np.arange(config.zMin, config.zMax, config.zStep):
         # parameter tuple (so we can get mean and variance of final answer)
         for trialId in range(len(qlfParams)):
             # the qlf returns number of quasars / comoving volume / magnitude
-            quasarDensity = qlf(qlfParams[trialId], z, M1450) 
+            quasarDensity = qlf(qlfParams[trialId], z, M1450)
             # to get the actual number of quasars, multiply by volume and magnitude
             numNewQuasars = quasarDensity * volume * config.M1450Step
             # get the apparent magnitude of quasars of this M1450 at redshift z
