@@ -15,7 +15,7 @@ import datetime
 
 import config
 
-from plot_provenance import plot_provence
+from plot_provenance import plot_provenance
 
 from getargs import getargs
 from getconfig import getconfig
