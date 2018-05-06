@@ -29,9 +29,9 @@ def getconfig(configfile=None, debug=False, silent=False):
 
     # read the configuration file
     # config = configparser.RawConfigParser()
-    config = configparser.SafeConfigParser()
-    config.read("countQuasars.conf")
-
+    conf = configparser.SafeConfigParser()
+    if configfile is None:
+        conf.read("countQuasars.conf")
 
     print('__file__', __file__)
     if configfile is None:
@@ -63,31 +63,31 @@ def getconfig(configfile=None, debug=False, silent=False):
 
    # get general config params
 
-    survey = config.get("general", "survey")
-    f = config.get("general", "filter")
-    reddening = config.getfloat("general", "reddening")
-    skyArea = config.getfloat("general", "area")
-    qlfParamsFilename = config.get("general", "qlfParamsFilename")
-    qlfName = config.get("general", "qlfName")
-    k = config.getfloat("general", "k")
+    survey = conf.get("general", "survey")
+    f = conf.get("general", "filter")
+    reddening = conf.getfloat("general", "reddening")
+    skyArea = conf.getfloat("general", "area")
+    qlfParamsFilename = conf.get("general", "qlfParamsFilename")
+    qlfName = conf.get("general", "qlfName")
+    k = conf.getfloat("general", "k")
 
     # get output config params
-    outputDir = config.get("output", "outputDir")
-    outFilenameTbl = config.get("output", "outFilenameTbl")
-    outFilenamePlt = config.get("output", "outFilenamePlt")
+    outputDir = conf.get("output", "outputDir")
+    outFilenameTbl = conf.get("output", "outFilenameTbl")
+    outFilenamePlt = conf.get("output", "outFilenamePlt")
 
     # get SED config params
-    sedDir = config.get("sed", "sedDir")
-    sedFilenameFormat = config.get("sed", "sedFilenameFormat")
+    sedDir = conf.get("sed", "sedDir")
+    sedFilenameFormat = conf.get("sed", "sedFilenameFormat")
 
     # get integral config params
-    zMin = config.getfloat("integral", "zMin")
-    zMax = config.getfloat("integral", "zMax")
-    zStep = config.getfloat("integral", "zStep")
+    zMin = conf.getfloat("integral", "zMin")
+    zMax = conf.getfloat("integral", "zMax")
+    zStep = conf.getfloat("integral", "zStep")
 
-    M1450Min = config.getfloat("integral", "M1450Min")
-    M1450Max = config.getfloat("integral", "M1450Max")
-    M1450Step = config.getfloat("integral", "M1450Step")
+    M1450Min = conf.getfloat("integral", "M1450Min")
+    M1450Max = conf.getfloat("integral", "M1450Max")
+    M1450Step = conf.getfloat("integral", "M1450Step")
 
     # get cosmology config params
     km_s_Mpc2Hz = 3.24077828 * 10**-20
@@ -99,7 +99,7 @@ def getconfig(configfile=None, debug=False, silent=False):
     omegaLambda = 1 - omegaM
 
     # get plot config params
-    plotTitle = config.get("plot", "plotTitle")
+    plotTitle = conf.get("plot", "plotTitle")
     yMin = conf.getfloat("plot", "yMin")
     yMax = conf.getfloat("plot", "yMax")
     plotGrid = conf.getboolean("plot", "plotGrid")
@@ -153,4 +153,4 @@ def getconfig(configfile=None, debug=False, silent=False):
         print()
 
 
-    return config
+    return

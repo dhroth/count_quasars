@@ -2,11 +2,14 @@ from __future__ import print_function
 from __future__ import division
 
 import config
+
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.colors import ListedColormap
 from matplotlib.colorbar import ColorbarBase
 from matplotlib import gridspec
+
+from plot_provenance import plot_provenance
 
 """
 # read in Willott's 100 bootstrapped QLF parameters
@@ -67,5 +70,8 @@ cmap = ListedColormap(colors)
 bounds = [3.5,4.5,5.5,6.5,7.5,8.5]
 cb = ColorbarBase(ax2, cmap=cmap, boundaries=bounds, ticks=[4,5,6,7,8])
 ax2.set_title("z")
-plt.savefig("results/QLFs.svg")
 
+plot_provenance()
+
+plt.savefig("results/QLFs.svg")
+plt.savefig("results/QLFs.png")

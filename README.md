@@ -1,3 +1,11 @@
+
+# TODO
+
+could plot the survey filters and QLF for each run; these could be optional
+and would be placed in the results directory with the counts.
+Also the SEDs at the fiducial redshifts.
+
+
 # Introduction
 
 This project aims to compute how many quasars could be detected by an

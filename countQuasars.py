@@ -15,7 +15,7 @@ import datetime
 
 import config
 
-help(config)
+from plot_provenance import plot_provence
 
 from getargs import getargs
 from getconfig import getconfig
@@ -26,12 +26,21 @@ args = getargs()
 if args.configfile is not None:
     configfile = args.configfile
 
+#config = getconfig()
+
 for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
     argVal = getattr(args, opt)
     if argVal is not None:
         setattr(config, opt, argVal)
 
+type(config)
+dir(config)
+help(config)
+
 help(config.k)
+
+print(config.k)
+
 # sys.exit()
 
 # read in Willott's 100 bootstrapped QLF parameters
@@ -162,28 +171,7 @@ plt.ylim(config.yMin, config.yMax)
 plt.xlim(config.minLimitingDepth, config.maxLimitingDepth)
 plt.title(config.plotTitle)
 
-# put provenance on the side of the plot
-try:
-    gitHash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
-except subprocess.CalledProcessError as e:
-    print("You need to be in a git repository in order to put provenance " +
-          "information on the plots. Please clone the repository instead " +
-          "of downloading the source files directly, and ensure that your " +
-          "local git repo hasn't been corrupted")
-    exit()
-gitHash = gitHash.decode("utf-8")
-try:
-    producer = subprocess.check_output(["git", "config", "user.name"]).strip()
-except subprocess.CalledProcessError as e:
-    print("You have not set the git user.name property, which is needed " +
-          "to add provenance information on the plots. You can set this " +
-          "property globally using the command git config --global " +
-          "user.name '<my name>'")
-    exit()
-provenance = producer.decode("utf-8") + ", " + gitHash
-provenance += "\n Using {} QLF with k={:2.4f}".format(config.qlfName, config.k)
-plt.figtext(0.93, 0.5, provenance, rotation="vertical",
-            verticalalignment="center", alpha=0.7)
+plot_provenance()
 
 if not args.saveOutput:
     plt.show()
