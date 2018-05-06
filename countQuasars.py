@@ -15,24 +15,33 @@ import datetime
 
 import config
 
-# parse input argument
-parser = argparse.ArgumentParser(description="")
-parser.add_argument("-s", "--saveOutput", help="Save output to disk",
-                    action="store_true")
-parser.add_argument("-f", "--forceOverwrite", help="Overwrite output files " +
-                    "if they already exist", action="store_true")
-parser.add_argument("-x", "--minLimitingDepth",
-                    help="x-axis minimum value", type=float)
-parser.add_argument("-X", "--maxLimitingDepth",
-                    help="x-axis maximum value", type=float)
-parser.add_argument("-y", "--yMin", help="y-axis minimum value", type=float)
-parser.add_argument("-Y", "--yMax", help="y-axis maximum value", type=float)
-args = parser.parse_args()
+from plot_provenance import plot_provenance
+
+from getargs import getargs
+from getconfig import getconfig
+
+# read args first since the config file can be specified on the command line
+args = getargs()
+
+if args.configfile is not None:
+    configfile = args.configfile
+
+#config = getconfig()
 
 for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
     argVal = getattr(args, opt)
     if argVal is not None:
         setattr(config, opt, argVal)
+
+type(config)
+dir(config)
+help(config)
+
+help(config.k)
+
+print(config.k)
+
+# sys.exit()
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
@@ -65,7 +74,7 @@ def E(z):
 def VC(z, dz, Omega):
     # get the comoving volume between redshift z and z+dz
     # over sky area Omega (in radians)
-    
+
     # get the comoving distance to redshift z
     DC = config.DH * integrate.quad(lambda zp: 1/E(zp), 0, z)[0]
 
@@ -104,7 +113,7 @@ for z in np.arange(config.zMin, config.zMax, config.zStep):
         # parameter tuple (so we can get mean and variance of final answer)
         for trialId in range(len(qlfParams)):
             # the qlf returns number of quasars / comoving volume / magnitude
-            quasarDensity = qlf(qlfParams[trialId], z, M1450) 
+            quasarDensity = qlf(qlfParams[trialId], z, M1450)
             # to get the actual number of quasars, multiply by volume and magnitude
             numNewQuasars = quasarDensity * volume * config.M1450Step
             # get the apparent magnitude of quasars of this M1450 at redshift z
@@ -162,28 +171,7 @@ plt.ylim(config.yMin, config.yMax)
 plt.xlim(config.minLimitingDepth, config.maxLimitingDepth)
 plt.title(config.plotTitle)
 
-# put provenance on the side of the plot
-try:
-    gitHash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
-except subprocess.CalledProcessError as e:
-    print("You need to be in a git repository in order to put provenance " +
-          "information on the plots. Please clone the repository instead " +
-          "of downloading the source files directly, and ensure that your " +
-          "local git repo hasn't been corrupted")
-    exit()
-gitHash = gitHash.decode("utf-8")
-try:
-    producer = subprocess.check_output(["git", "config", "user.name"]).strip()
-except subprocess.CalledProcessError as e:
-    print("You have not set the git user.name property, which is needed " +
-          "to add provenance information on the plots. You can set this " +
-          "property globally using the command git config --global " +
-          "user.name '<my name>'")
-    exit()
-provenance = producer.decode("utf-8") + ", " + gitHash
-provenance += "\n Using {} QLF with k={:2.4f}".format(config.qlfName, config.k)
-plt.figtext(0.93, 0.5, provenance, rotation="vertical",
-            verticalalignment="center", alpha=0.7)
+plot_provenance()
 
 if not args.saveOutput:
     plt.show()
