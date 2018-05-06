@@ -18,7 +18,9 @@ import config
 help(config)
 
 from getargs import getargs
+from getconfig import getconfig
 
+# read args first since the config file can be specified on the command line
 args = getargs()
 
 if args.configfile is not None:
@@ -29,7 +31,8 @@ for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
     if argVal is not None:
         setattr(config, opt, argVal)
 
-sys.exit()
+help(config.k)
+# sys.exit()
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
