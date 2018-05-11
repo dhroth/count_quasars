@@ -16,9 +16,15 @@ import datetime
 import config
 
 from plot_provenance import plot_provenance
-
 from getargs import getargs
 from getconfig import getconfig
+
+print(type(config))
+print(dir(config), len(dir(config)))
+help(config)
+
+help(config.__dict__)
+
 
 # read args first since the config file can be specified on the command line
 args = getargs()
@@ -26,22 +32,52 @@ args = getargs()
 if args.configfile is not None:
     configfile = args.configfile
 
-#config = getconfig()
+#config =
+getconfig(configfile='countQuasars.conf', debug=True)
 
-for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
+
+# this will print too mcuh stuff; could exclude attribues of for __xxx__
+# e.g __doc__, __builtins__
+#for attr, value in config.__dict__.iteritems():
+#    print(attr, value, type(value))
+
+for attr, value in config.__dict__.iteritems():
+    print(attr, type(value))
+
+# for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
+for opt in vars(args):
     argVal = getattr(args, opt)
+    print('opt:', opt, argVal)
     if argVal is not None:
         setattr(config, opt, argVal)
-
-type(config)
-dir(config)
 help(config)
 
-help(config.k)
-
-print(config.k)
-
 # sys.exit()
+
+
+if args.survey is not None:
+    config.survey = args.survey
+print('Survey:', args.survey, config.survey)
+
+if args.filter is not None:
+    config.f = args.filter
+print('Waveband/Filter:', args.filter, config.f)
+
+if args.kphi is not None:
+    config.k = args.kphi
+print('QLF kphi:', config.k, args.kphi)
+
+
+print('zcutoffs:', config.zCutoffs)
+print('zmin, zmax, zstep:',
+      config.zMin, config.zMax, config.zStep)
+
+date = datetime.datetime.now().strftime("%Y-%m-%d")
+outPath = config.outputDir.format(config.survey, config.f, date)
+print('Output path:', outPath)
+if not os.path.exists(outPath):
+    os.makedirs(outPath)
+
 
 # read in Willott's 100 bootstrapped QLF parameters
 # assuming alpha and k are constant as described in the paper
@@ -183,10 +219,6 @@ overwriteError = "Output path {} already exists. Refusing to overwrite. "
 overwriteError += "Specify -f or --forceOverwrite to force overwriting."
 
 # save one .tbl file for each zCutoff
-date = datetime.datetime.now().strftime("%Y-%m-%d")
-outPath = config.outputDir.format(config.survey, config.f, date)
-if not os.path.exists(outPath):
-    os.makedirs(outPath)
 for z in config.zCutoffs:
     outFilename = config.outFilenameTbl.format(config.survey, config.f,
                                                config.reddening, z, date)
@@ -215,13 +247,11 @@ else:
 
 # copy the config file currently in use into outPath
 confDest = os.path.join(outPath, "countQuasars.conf")
-if not os.path.exists(confDest):
-    shutil.copyfile("countQuasars.conf", confDest)
+if not os.path.exists(confDest) and not args.forceOverwrite:
+    warnings.warn(overwriteError.format(confDest))
 else:
-    # No error is thrown if the config file already exists -- we assume the
-    # user makes no changes between config files besides the survey/filter and
-    # the reddening, but this is not enforced
-    pass
+    shutil.copyfile("countQuasars.conf", confDest)
+
 
 # copy the command line arguments into outPath
 with open(os.path.join(outPath, "commandArgs.txt"), "w") as outFile:

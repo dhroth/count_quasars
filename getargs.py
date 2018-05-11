@@ -51,6 +51,19 @@ def getargs(verbose=False):
                         help="Overwrite output files " +
                         "if they already exist", action="store_true")
 
+
+    parser.add_argument("--survey", default='LSST',
+                         help="Survey")
+
+    parser.add_argument("--filter", default='?',
+                         help="Filter waveband")
+
+    parser.add_argument("--skyArea", default=10000.0, type=float,
+                         help="Survey sky area in square degrees")
+
+    parser.add_argument("--kphi", default=-0.72, type=float,
+                         help="k phi*")
+
     parser.add_argument("-x", "--minLimitingDepth",
                          help="x-axis minimum value", type=float)
 
@@ -77,13 +90,17 @@ def getargs(verbose=False):
     parser.add_argument("--version", action='store_true',
                         help="verbose option")
 
-
     args = parser.parse_args()
 
-
     if args.debug or args.verbose:
+        print()
         print('Number of arguments:', len(sys.argv),
               'arguments: ', sys.argv[0])
+
+    if args.debug or args.verbose:
+       print()
+       for arg in vars(args):
+          print(arg, getattr(args, arg))
 
     if args.debug or args.verbose:
         pprint.pprint(args)
@@ -91,6 +108,7 @@ def getargs(verbose=False):
     if args.version:
         print('version:', __version__)
         sys.exit(0)
+
 
     return args
 
