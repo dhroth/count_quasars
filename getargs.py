@@ -79,15 +79,22 @@ def getargs(verbose=False):
                         default=None,
                         help="configuration file")
 
+    # needs a loggin option too
+
     parser.add_argument("--debug",
                         action='store_true',
                         help="debug option")
+
+    parser.add_argument("--silent",
+                        action='store_true',
+                        help="silent option")
 
     parser.add_argument("--verbose", default=verbose,
                         action='store_true',
                         help="verbose option")
 
-    parser.add_argument("--version", action='store_true',
+    parser.add_argument("--version",
+                        action='store_true',
                         help="verbose option")
 
     args = parser.parse_args()

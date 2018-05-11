@@ -1,3 +1,13 @@
+"""
+
+
+ configutation via ..
+
+
+
+"""
+
+
 from __future__ import print_function, division
 
 from matplotlib import pyplot as plt
@@ -13,47 +23,56 @@ import argparse
 import warnings
 import datetime
 
+# stores configuration parameters in object of form config.VariableName
+# e.g. config.zcutoff
 import config
 
 from plot_provenance import plot_provenance
 from getargs import getargs
 from getconfig import getconfig
 
-print(type(config))
-print(dir(config), len(dir(config)))
-help(config)
-
-help(config.__dict__)
-
 
 # read args first since the config file can be specified on the command line
 args = getargs()
+
+debug = args.debug
+verbose = args.verbose
+silent = args.silent
+print('silent, verbose, debug:', silent, verbose, debug)
+
+if debug:
+    print(type(config))
+    print(dir(config), len(dir(config)))
+    help(config)
+    help(config.__dict__)
+
 
 if args.configfile is not None:
     configfile = args.configfile
 
 #config =
-getconfig(configfile='countQuasars.conf', debug=True)
+getconfig(configfile='countQuasars.conf', debug=debug)
 
 
-# this will print too mcuh stuff; could exclude attribues of for __xxx__
-# e.g __doc__, __builtins__
-#for attr, value in config.__dict__.iteritems():
-#    print(attr, value, type(value))
-
-for attr, value in config.__dict__.iteritems():
-    print(attr, type(value))
+if debug or verbose:
+    # this will print too mcuh stuff; could exclude attribues of for __xxx__
+    # e.g __doc__, __builtins__
+    #for attr, value in config.__dict__.iteritems():
+    #    print(attr, value, type(value))
+    for attr, value in config.__dict__.iteritems():
+        print(attr, type(value))
 
 # for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
+# overwrite config.name with args.name where names are the same
 for opt in vars(args):
     argVal = getattr(args, opt)
-    print('opt:', opt, argVal)
+    if debug:
+        print('opt:', opt, argVal)
     if argVal is not None:
         setattr(config, opt, argVal)
-help(config)
+
 
 # sys.exit()
-
 
 if args.survey is not None:
     config.survey = args.survey

@@ -188,6 +188,11 @@ def quasarMag(z, M1450, survey, f):
 
     # Calculate expected AB magnitudes in the requested lsst band
     bandpass = f2Throughput(survey, f)
-    mag = agn.calcMag(bandpass)
+    try:
+        mag = agn.calcMag(bandpass)
+    except:
+        print('Problem with:', spectrumFilename)
+        exit
+
     magCache[(z, M1450, survey, f)] = mag
     return mag
