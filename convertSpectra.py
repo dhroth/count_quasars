@@ -12,9 +12,11 @@ import config
 # filename format (where z is multiplied by 100 and the reddening by 1000)
 # and saves the spectrum to a directory/filename specified in the config file
 
-inFilenames = glob.glob("HZQ_Tracks_PH_20170817/qm1708_*_ls_*.dat")
+# inFilenames = glob.glob("HZQ_Tracks_PH_20170817/qm1708_*_ls_*.dat")
+inFilenames = glob.glob("nmSeds/qm1804_*_ls_*.dat")
 
 for inFilename in inFilenames:
+    print(inFilename)
     with open(inFilename, "r") as inFile:
         base = os.path.basename(inFilename)
         parts = base.split("_")
@@ -34,7 +36,7 @@ for inFilename in inFilenames:
 
         with open(outPath, "w") as outFile:
             # TODO this is hacky -- put a value of 0 at 300 nm so that there's
-            # more likely to be some overlap with the bandpasses so that the 
+            # more likely to be some overlap with the bandpasses so that the
             # lsst sims_photUtils code doesn't crash when the redshifted SED has
             # no flux in some bandpass we care about
             outFile.write("300.0 0.0\n")
