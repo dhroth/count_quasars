@@ -191,7 +191,7 @@ def quasarMag(z, M1450, survey, f):
     try:
         mag = agn.calcMag(bandpass)
     except:
-        print('Problem with:', spectrumFilename)
+        print('Problem with:', spectrumFilename, z)
         exit
 
     magCache[(z, M1450, survey, f)] = mag

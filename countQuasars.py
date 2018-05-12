@@ -1,7 +1,13 @@
 """
 
 
- configutation via ..
+ configuration via countQuasars.conf
+
+ can be overridden by comand line configfile
+
+ command line arguments
+
+ with the command line arguments taking precedence
 
 
 
