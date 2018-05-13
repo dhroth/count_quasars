@@ -69,6 +69,8 @@ Kulkarni2019_z6p00_parameters = (-2.40, -4.99, -29.12,
                                  np.power(10.0, -10.60), 0.00)
 
 
+Manti2018_z4p75_parameters = (-1.76, -3.21, -24.06,
+                              np.power(10.0, -5.87), 0.00)
 Manti2018_z6p00_parameters = (-1.33, -3.16, -22.11,
                               np.power(10.0, -5.06), 0.00)
 
@@ -110,10 +112,6 @@ McGreer2018_qlf = qlf(McGreer2018_parameters, z, ms)
 label = 'z = 5.00 (McGreer+2018): (-1.97, -4.00, -27.47, 1.148e-9, -0.47)'
 ax1.semilogy(ms, McGreer2018_qlf, label=label,
              color='black', linestyle="-")
-
-
-
-
 
 
 ax1.set_xlim(M1450_limits)
@@ -224,6 +222,130 @@ ax2.set_title("z")
 plot_provenance()
 
 plotfile = "results/QLFs_z4-6"
+print()
+print('Saving plotfile:', plotfile + '.png')
+plt.savefig(plotfile + '.png')
+plt.savefig(plotfile + '.svg')
+
+
+
+
+# z = 5
+
+M1450_limits = [-25.0, -29]
+
+ms = np.linspace(M1450_limits[0], M1450_limits[1])
+
+plt.figure(figsize=(10,7))
+
+gs = gridspec.GridSpec(1, 2, width_ratios=[15,1])
+ax1 = plt.subplot(gs[0])
+
+
+# put the QLFs in ax1
+colors = ["#4400BB", "#880088"]
+zs = [5]
+for z, color in zip(zs, colors):
+    willottPhis = qlf(willott, z, ms)
+    jiangPhis = qlf(jiang, z, ms)
+
+    wLabel = 'z = ' + '{:4.2f}'.format(z) \
+             + '; Willott+2018 QLF (-1.50, -2.81, -25.13)'
+    jLabel = 'z = ' + '{:4.2f}'.format(z) \
+             + '; Jiang+2016 QLF (-1.90, -2.80, -25.20)'
+
+    ax1.semilogy(ms, willottPhis, label=wLabel, color=color)
+    ax1.semilogy(ms, jiangPhis, label=jLabel, color=color, linestyle="--")
+
+
+z = 5.0
+McGreer2013_qlf = qlf(McGreer2013_parameters, z, ms)
+label = 'z=5 (McGreer+2013): (-2.03, -4.00, -27.21)'
+ax1.semilogy(ms, McGreer2013_qlf, label=label,
+             color='black', linestyle="--")
+
+McGreer2018_qlf = qlf(McGreer2018_parameters, z, ms)
+label = 'z=5 (McGreer+2018): (-1.97, -4.00, -27.47)'
+ax1.semilogy(ms, McGreer2018_qlf, label=label,
+             color='black', linestyle="-")
+
+
+#
+Kulkarni2019_qlf = qlf(Kulkarni2019_z4p92_parameters, z, ms)
+label = 'z = 4.92 (Kulkarni+2019) 2.31, -4.51, -27.88'
+ax1.semilogy(ms, Kulkarni2019_qlf, label=label,
+             color='red', linestyle="--")
+
+
+Manti2018_qlf = qlf(Manti2018_z4p75_parameters, z, ms)
+label = 'z = 4.75 (Manti+2018): (-1.33, -3.16, -22.11)'
+ax1.semilogy(ms, Manti2018_qlf, label=label,
+             color='orange', linestyle="-")
+
+ax1.set_xlim(M1450_limits)
+ax1.set_ylabel("Phi(M_1450) (Mpc^-3 mag^-1)")
+ax1.set_xlabel("M_1450")
+ax1.legend(fontsize='small')
+ax1.grid()
+
+plot_provenance()
+
+plotfile = "results/QLFs_z5"
+print()
+print('Saving plotfile:', plotfile + '.png')
+plt.savefig(plotfile + '.png')
+plt.savefig(plotfile + '.svg')
+
+
+
+# z = 6
+
+M1450_limits = [-25.0, -29]
+
+ms = np.linspace(M1450_limits[0], M1450_limits[1])
+
+plt.figure(figsize=(10,7))
+gs = gridspec.GridSpec(1, 2, width_ratios=[15,1])
+ax1 = plt.subplot(gs[0])
+
+# put the QLFs in ax1
+colors = ["#4400BB", "#880088"]
+zs = [6]
+for z, color in zip(zs, colors):
+    willottPhis = qlf(willott, z, ms)
+    jiangPhis = qlf(jiang, z, ms)
+
+    wLabel = 'z = ' + '{:4.2f}'.format(z) \
+             + '; Willott+2018 QLF (-1.50, -2.81, -25.13)'
+    jLabel = 'z = ' + '{:4.2f}'.format(z) \
+             + '; Jiang+2016 QLF (-1.90, -2.80, -25.20)'
+
+    ax1.semilogy(ms, willottPhis, label=wLabel, color=color)
+    ax1.semilogy(ms, jiangPhis, label=jLabel, color=color, linestyle="--")
+
+
+Kulkarni2019_qlf = qlf(Kulkarni2019_z6p00_parameters, z, ms)
+label = 'z = 6.00 (Kulkarni+2019) 2.40, -4.99, -29.12'
+ax1.semilogy(ms, Kulkarni2019_qlf, label=label,
+             color='red', linestyle="-")
+
+
+Manti2018_qlf = qlf(Manti2018_z6p00_parameters, z, ms)
+label = 'z = 6.00 (Manti+2018): (-1.33, -3.16, -22.11)'
+ax1.semilogy(ms, Manti2018_qlf, label=label,
+             color='orange', linestyle="-")
+
+
+ax1.set_xlim(M1450_limits)
+ax1.set_ylabel("Phi(M_1450) (Mpc^-3 mag^-1)")
+ax1.set_xlabel("M_1450")
+ax1.legend(fontsize='small')
+ax1.grid()
+
+
+plot_provenance()
+
+plotfile = "results/QLFs_z6"
 print()
 print('Saving plotfile:', plotfile + '.png')
 plt.savefig(plotfile + '.png')
