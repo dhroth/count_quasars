@@ -79,6 +79,8 @@ M1450_limits = [-25.0, -29.0]
 
 ms = np.linspace(M1450_limits[0], M1450_limits[1])
 
+
+# run for redshift range 4 to 8 in steps of 1
 plt.figure(figsize=(10,7))
 
 gs = gridspec.GridSpec(1, 2, width_ratios=[15,1])
@@ -87,7 +89,7 @@ ax2 = plt.subplot(gs[1])
 
 # put the QLFs in ax1
 colors = ["#0000FF", "#4400BB", "#880088", "#BB0044", "#FF0000"]
-zs = [4,5,6,7,8]
+zs = [4, 5, 6, 7, 8]
 
 for z, color in zip(zs, colors):
     willottPhis = qlf(willott, z, ms)
@@ -132,6 +134,56 @@ ax2.set_title("z")
 plot_provenance()
 
 plotfile = "results/QLFs_z4-8"
+print()
+print('Saving plotfile:', plotfile + '.png')
+plt.savefig(plotfile + '.png')
+plt.savefig(plotfile + '.svg')
+
+
+
+
+# run for redshift range 6 to 8.0 in steps of 0.50
+plt.figure(figsize=(10,7))
+
+gs = gridspec.GridSpec(1, 2, width_ratios=[15,1])
+ax1 = plt.subplot(gs[0])
+ax2 = plt.subplot(gs[1])
+
+# put the QLFs in ax1
+colors = ["#0000FF", "#4400BB", "#880088", "#BB0044", "#FF0000"]
+zs = [6, 6.5, 7.0, 7.5, 8.0]
+
+for z, color in zip(zs, colors):
+    willottPhis = qlf(willott, z, ms)
+    jiangPhis = qlf(jiang, z, ms)
+
+    wLabel = "Willott+2018 QLF (-1.50, -2.81, -25.13, 1.14e-8, -0.47)" \
+        if z == 6 else None
+    jLabel = "Jiang+2016 QLF (-1.90, -2.80, -25.20, 9.93e-9, -0.70)" \
+        if z == 6 else None
+
+    ax1.semilogy(ms, willottPhis, label=wLabel, color=color)
+    ax1.semilogy(ms, jiangPhis, label=jLabel, color=color, linestyle="--")
+
+
+ax1.set_xlim(M1450_limits)
+ax1.set_ylabel("Phi(M_1450) (Mpc^-3 mag^-1)")
+ax1.set_xlabel("M_1450")
+ax1.legend()
+ax1.grid()
+
+# create the colorbar in ax2
+cmap = ListedColormap(colors)
+bounds = [5.75, 6.25, 6.75, 7.25, 7.75, 8.25]
+ticks = [6.0, 6.5, 7.0, 7.5, 8.0]
+
+
+cb = ColorbarBase(ax2, cmap=cmap, boundaries=bounds, ticks=ticks)
+ax2.set_title("z")
+
+plot_provenance()
+
+plotfile = "results/QLFs_z6-8"
 print()
 print('Saving plotfile:', plotfile + '.png')
 plt.savefig(plotfile + '.png')

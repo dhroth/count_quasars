@@ -54,10 +54,10 @@ if debug:
 
 if args.configfile is not None:
     configfile = args.configfile
-    getconfig(configfile=configfile, debug=debug)
+    newconfig = getconfig(configfile=configfile, debug=debug)
 
 if debug or verbose:
-    # this will print too mcuh stuff; could exclude attribues of for __xxx__
+    # this will print too much stuff; could exclude attribues of for __xxx__
     # e.g __doc__, __builtins__
     #for attr, value in config.__dict__.iteritems():
     #    print(attr, value, type(value))
