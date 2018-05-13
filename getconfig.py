@@ -4,6 +4,8 @@ TODO: catch exception
 
 
 """
+from __future__ import print_function, division
+
 def getconfig(configfile=None, debug=False, silent=False, verbose=True):
     """
     read config file

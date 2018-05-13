@@ -1,19 +1,18 @@
 """
 
 
- configuration via countQuasars.conf
+ (i) configuration via countQuasars.conf
 
- can be overridden by comand line configfile
+ (2) can be overridden by comand line configfile; optional config file
+ does not need all config parameters to be set
 
- command line arguments
+ (3) command line arguments
 
  with the command line arguments taking precedence
 
 
 
 """
-
-
 from __future__ import print_function, division
 
 from matplotlib import pyplot as plt
@@ -55,10 +54,7 @@ if debug:
 
 if args.configfile is not None:
     configfile = args.configfile
-
-#config =
-getconfig(configfile='countQuasars.conf', debug=debug)
-
+    getconfig(configfile=configfile, debug=debug)
 
 if debug or verbose:
     # this will print too mcuh stuff; could exclude attribues of for __xxx__
@@ -68,6 +64,7 @@ if debug or verbose:
     for attr, value in config.__dict__.iteritems():
         print(attr, type(value))
 
+# supersede config parameters with command line arguements
 # for opt in ["minLimitingDepth", "maxLimitingDepth", "yMin", "yMax"]:
 # overwrite config.name with args.name where names are the same
 for opt in vars(args):
