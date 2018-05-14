@@ -228,7 +228,7 @@ if config.plotGrid:
 plt.ylim(config.yMin, config.yMax)
 plt.xlim(config.minLimitingDepth, config.maxLimitingDepth)
 plt.title(config.plotTitle)
-
+plt.suptitle(outPath)
 plot_provenance()
 
 if not args.saveOutput:
