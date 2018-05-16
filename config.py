@@ -4,12 +4,23 @@ import numpy as np
 conf = configparser.SafeConfigParser()
 conf.read("countQuasars.conf")
 
+#def config()
+
+# https://stackoverflow.com/questions/6759016/getting-a-list-from-a-config-file-with-configparser
+
 # get general config params
 
 survey = conf.get("general", "survey")
 f = conf.get("general", "filter")
+# rgm added filter as part of refactor
+filter = conf.get("general", "filter")
 reddening = conf.getfloat("general", "reddening")
+
+
 skyArea = conf.getfloat("general", "area")
+# rgm added area as part of refactor
+area = conf.getfloat("general", "area")
+
 qlfParamsFilename = conf.get("general", "qlfParamsFilename")
 qlfName = conf.get("general", "qlfName")
 k = conf.getfloat("general", "k")
@@ -84,4 +95,3 @@ else:
 if not (len(depthLabelXs) == len(depthLabelYs) == len(depths) == len(labels)):
     raise ValueError("The depths, labels, and labelX and labelY arrays " +
                      "must all be the same length in the .conf")
-
