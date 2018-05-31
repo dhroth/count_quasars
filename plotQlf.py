@@ -190,8 +190,6 @@ plt.savefig(plotfile + '.png')
 plt.savefig(plotfile + '.svg')
 
 
-
-
 # z from 4 to 6 including McGreer
 
 M1450_limits = [-25.0, -29]
